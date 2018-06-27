@@ -3,7 +3,7 @@ registerServiceWorker = () => {
 
   var indexController = this;
 
-  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+  navigator.serviceWorker.register('./sw.js').then(function(reg) {
     if (!navigator.serviceWorker.controller) {
       return;
     }
@@ -83,10 +83,12 @@ document.addEventListener("DOMContentLoaded", function(){
       // console.log(currencies);
       if(currencies.length > 0){
         for (currency of currencies) {
-          $('.currencySelect').append($('<option>', {
-            value: currency.id,
-            text: currency.name
-          }));
+          var opt = document.createElement('option');
+          opt.value = currency.id;
+          opt.innerHTML = currency.name;
+          var clone = opt.cloneNode(true);
+          currencyFrom.appendChild(opt);
+          currencyTo.appendChild(clone);
         }
       } else {
         $.getJSON("https://free.currencyconverterapi.com/api/v5/currencies", json => {

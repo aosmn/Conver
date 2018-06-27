@@ -8,9 +8,12 @@ body {
   font-family: sans;
   padding: 0;
   margin: 0;
+  background-image: url('background.jpg');
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 header {
-  width: 100%;
+  width: calc(100% - 30px);
   background-color: var(--green);
   color: white;
   font-weight: bolder;
