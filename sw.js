@@ -2,15 +2,15 @@ var staticCacheName = 'converter-static-v0';
 var allCaches = [
   staticCacheName
 ];
-console.log("lala");
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
-        'index.html',
-        'styles.css',
-        'scripts.js'
+        '/index.html',
+        '/styles.css',
+        '/scripts.js',
+        '/indexedDB.js',
       ]);
     })
   );
@@ -34,12 +34,12 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   var requestUrl = new URL(event.request.url);
 
-  // if (requestUrl.origin === location.origin) {
-  //   if (requestUrl.pathname === '/') {
-  //     event.respondWith(caches.match('index.html'));
-  //     return;
-  //   }
-  // }
+  if (requestUrl.origin === location.origin) {
+    if (requestUrl.pathname === '/') {
+      event.respondWith(caches.match('/index.html'));
+      return;
+    }
+  }
 
   event.respondWith(
     caches.match(event.request).then(function(response) {
