@@ -1,25 +1,176 @@
 :root {
-  --green: #6dc995;
-  --cyan: #bef2eb;
-  --blue: #3a91aa;
-  --purple: #6b4897;
+  --darkBlue: #283149;
+  --greyBlue: #404b69;
+  --darkGreen: #00818a;
+  --white: #dbedf3;
 }
 body {
-  font-family: sans;
+  font-family: 'Raleway', sans-serif;
   padding: 0;
   margin: 0;
-  background-image: url('background.jpg');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-header {
-  width: calc(100% - 30px);
-  background-color: var(--green);
-  color: white;
-  font-weight: bolder;
-  padding: 15px;
-  font-size: 1.5rem;
+  text-align: center;
 }
 main {
-  padding: 15px;
+  /*padding: 15px;*/
+  height: 100vh;
+  overflow: hidden;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--darkBlue);
+  font-weight: 200;
+  padding-bottom: 5px;
+}
+.from-container,
+.to-container {
+  height: 50vh;
+  margin: 0;
+  padding: 0;
+}
+
+.from-container {
+  height: 45vh;
+}
+
+.from-container{
+  background: var(--darkBlue);
+  position: relative;
+}
+
+.from-container::after{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: calc(50% - 300px);
+    bottom: -100px;
+    border-left: 300px solid transparent;
+    border-right: 300px solid transparent;
+    border-top: 100px solid var(--darkBlue);
+  }
+
+
+.to-container{
+  position: relative;
+}
+
+#result{
+    width: 100%;
+    overflow-x: auto;
+    position: absolute;
+    top: calc(50% - 1rem);
+    left: 0;
+    font-size: 6rem;
+    color: var(--darkBlue);
+
+}
+
+input {
+  width: 300px;
+  background: rgba(0,0,0,0);
+  border: 0;
+  color: #fff;
+  text-align: center;
+  font-size: 6rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  position: absolute;
+  top: calc(50% - 2rem);
+  left: calc(50vw - 150px);
+  font-family: 'Raleway', sans-serif;
+}
+
+
+input:focus{
+  border-bottom: var(--darkGreen) 1px solid;
+  outline: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+select {
+  text-align-last:center;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+  font-size: 1.5rem;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 200;
+ }
+
+select:focus{
+  outline: none;
+}
+
+select option {
+    margin: 40px;
+    background: var(--darkBlue);
+    color: #fff;
+    /*text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);*/
+    outline: none;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 200;
+}
+
+.from-container select {
+ color: #fff;
+}
+
+#from, #to {
+  width: 300px;
+  position: absolute;
+  top: calc(50% - 4.5rem);
+  left: calc(50vw - 150px);
+}
+
+#to {
+  top: calc(50% - 3.5rem);
+}
+
+.currency {
+  width: 300px;
+  font-size: 1rem;
+  font-weight: 200;
+  text-transform: uppercase;
+  position: absolute;
+  top: calc(50% + 7rem);
+  left: calc(50vw - 150px);
+}
+
+.from-container .currency {
+  color: #fff;
+}
+
+.to-container .currency {
+  color: var(--darkBlue);
+  top: calc(50% + 8rem);
+}
+
+
+/* width */
+::-webkit-scrollbar {
+    height: 6px;
+}
+
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--white);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--darkGreen);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--darkGreen);
 }

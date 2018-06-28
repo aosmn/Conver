@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function(){
   const currencyTo = document.getElementById('to');
   const amount = document.getElementById('amount');
   const result = document.getElementById('result');
+  const fromCurrLbl = document.getElementById('from-curr');
+  const toCurrLbl = document.getElementById('to-curr');
 
 
   const convertCurrency = e => {
@@ -36,7 +38,9 @@ document.addEventListener("DOMContentLoaded", function(){
     // console.log(e.target.value);
     const query = `${currencyFrom.value}_${currencyTo.value}`;
     const invQuery = `${currencyTo.value}_${currencyFrom.value}`;
-    if (amount.value && currencyTo.value !== "undefined" && currencyFrom.value !== "undefined") {
+    toCurrLbl.innerHTML = currencyTo.value;
+    fromCurrLbl.innerHTML = currencyFrom.value;
+    if (amount.value) {
       dbPromise.then(function(db) {
         const tx = db.transaction('conversions');
         const convStore = tx.objectStore('conversions');
@@ -87,30 +91,42 @@ document.addEventListener("DOMContentLoaded", function(){
           opt.value = currency.id;
           opt.innerHTML = currency.name;
           var clone = opt.cloneNode(true);
+          if (currency.id == "USD") {
+            opt.selected = true;
+            clone.selected = true;
+          }
           currencyFrom.appendChild(opt);
           currencyTo.appendChild(clone);
         }
       } else {
-        $.getJSON("https://free.currencyconverterapi.com/api/v5/currencies", json => {
-          // console.log(json.results);
-          currencies = json.results;
-          for (const curr in currencies) {
-            const currency = currencies[curr];
-                  // set "foo" to be "bar" in "keyval"
-            dbPromise.then(function(db) {
-              const tx = db.transaction('currencies', 'readwrite');
-              const currStore = tx.objectStore('currencies');
-              currStore.put({name: currency.currencyName, id: currency.id});
-              return tx.complete;
-            }).then(function() {
-              console.log('Added to db');
-              $('.currencySelect').append($('<option>', {
+        if($){
+          $.getJSON("https://free.currencyconverterapi.com/api/v5/currencies", json => {
+            // console.log(json.results);
+            currencies = json.results;
+            for (const curr in currencies) {
+              const currency = currencies[curr];
+              // set "foo" to be "bar" in "keyval"
+              dbPromise.then(function(db) {
+                const tx = db.transaction('currencies', 'readwrite');
+                const currStore = tx.objectStore('currencies');
+                currStore.put({name: currency.currencyName, id: currency.id});
+                return tx.complete;
+              }).then(function() {
+                console.log('Added to db');
+                let curr = {
                   value: currency.id,
                   text: currency.currencyName
-              }));
-            });
-          }
-        });
+                }
+                if (currency.id == "USD") {
+                  curr.selected = true;
+                }
+                $('.currencySelect').append($('<option>', curr));
+              });
+            }
+          });
+        } else {
+          console.log("no network");
+        }
       }
   });
 

@@ -4,27 +4,31 @@
     <meta charset="utf-8">
     <script src="indexedDB.js" type="text/javascript"></script>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:200,400" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="scripts.js" type="text/javascript"></script>
     <title></title>
   </head>
   <body>
-    <header>
-      Currency Converter
-    </header>
     <main>
-      <input type="number" class = "" id="amount" name="" value="" min="0">
       <!-- TODO:  autocomplete-->
-      <select id="from" class="currencySelect">
-        <option disabled selected value="undefined">Convert From</option>
-      </select>
-      <select id="to" class="currencySelect">
-        <option disabled selected value="undefined">Convert To</option>
-      </select>
-      <span id="result"></span>
+      <div class="from-container">
+        <input type="number" class = "" id="amount" name="" value=1 min="0">
+        <select id="from" class="currencySelect">
+          <!-- <option disabled selected value="undefined">Convert From</option> -->
+        </select>
+        <span class="currency" id="from-curr">USD</span>
+      </div>
+      <div class="to-container">
+        <span id="result">1</span>
+        <select id="to" class="currencySelect">
+          <!-- <option disabled selected value="undefined">Convert To</option> -->
+        </select>
+        <span class="currency" id="to-curr">USD</span>
+      </div>
     </main>
     <footer>
-      By aosmn &copy;2018
+      Currency converter by aosmn &copy;2018
     </footer>
   </body>
 </html>
