@@ -24,7 +24,7 @@ const splitDecimal = n => {
   const decimal = n - Math.floor(n);
   const whole = Math.floor(n);
   rsltWhole.innerHTML = whole;
-  rsltDecimal.innerHTML = `.${String(decimal).split('.')[1]}`;
+  rsltDecimal.innerHTML = String(decimal).split('.')[1] ? `.${String(decimal).split('.')[1]}` : "";
 }
 
 
