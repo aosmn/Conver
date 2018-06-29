@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="indexedDB.js" type="text/javascript"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="scripts.js" type="text/javascript"></script>
@@ -11,16 +12,16 @@
     <main>
       <!-- TODO:  autocomplete-->
       <div class="from-container">
+        <button type="button" id="switch"><img src="sharp-import_export-24px.svg" alt=""></button>
+        <div id="errorText">You are offline, data may not be up to date</div>
         <input type="number" class = "" id="amount" name="" value=1 min="0">
         <select id="from" class="currencySelect">
-          <!-- <option disabled selected value="undefined">Convert From</option> -->
         </select>
         <span class="currency" id="from-curr">USD</span>
       </div>
       <div class="to-container">
         <span id="result">1</span>
         <select id="to" class="currencySelect">
-          <!-- <option disabled selected value="undefined">Convert To</option> -->
         </select>
         <span class="currency" id="to-curr">USD</span>
       </div>

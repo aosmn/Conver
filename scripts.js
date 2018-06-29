@@ -30,12 +30,11 @@ document.addEventListener("DOMContentLoaded", function(){
   const result = document.getElementById('result');
   const fromCurrLbl = document.getElementById('from-curr');
   const toCurrLbl = document.getElementById('to-curr');
-
+  const errorText = document.getElementById('errorText');
+  const reverse = document.getElementById('switch');
 
   const convertCurrency = e => {
 
-    // console.log(amount.value, currencyTo.value, currencyFrom.value)
-    // console.log(e.target.value);
     const query = `${currencyFrom.value}_${currencyTo.value}`;
     const invQuery = `${currencyTo.value}_${currencyFrom.value}`;
     toCurrLbl.innerHTML = currencyTo.value;
@@ -49,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if (val) {
           console.log("value loaded from db");
           result.innerHTML = val.value*amount.value;
+          errorText.innerHTML = "";
         } else {
           if(currencyFrom.value === currencyTo.value){
             result.innerHTML = amount.value;
@@ -63,17 +63,23 @@ document.addEventListener("DOMContentLoaded", function(){
                   return tx.complete;
                 }).then(function() {
                   result.innerHTML = json[query].val*amount.value;
+                  errorText.innerHTML = "";
                 });
               }).catch(e => {
-                console.log("error lala", e);
-                result.innerHTML = `Network ${e.statusText} ${e.status}`;
+                console.log("error", e);
+                errorText.innerHTML = `Network ${e.statusText} ${e.status}`;
               });
             } catch (e) {
                 console.log("no internet");
+                result.innerHTML = ""
+                errorText.innerHTML = `Please connect to the internet to update currency database`;
+
             }
           }
         }
       });
+    } else {
+      result.innerHTML = 0;
     }
   };
 
@@ -101,11 +107,9 @@ document.addEventListener("DOMContentLoaded", function(){
       } else {
         if($){
           $.getJSON("https://free.currencyconverterapi.com/api/v5/currencies", json => {
-            // console.log(json.results);
             currencies = json.results;
             for (const curr in currencies) {
               const currency = currencies[curr];
-              // set "foo" to be "bar" in "keyval"
               dbPromise.then(function(db) {
                 const tx = db.transaction('currencies', 'readwrite');
                 const currStore = tx.objectStore('currencies');
@@ -125,7 +129,9 @@ document.addEventListener("DOMContentLoaded", function(){
             }
           });
         } else {
-          console.log("no network");
+          // errorText.innerHTML = `Network ${e.statusText} ${e.status}`;
+          errorText.innerHTML = `Please connect to the internet to update currency database`;
+          // console.log("no network");
         }
       }
   });
@@ -133,5 +139,10 @@ document.addEventListener("DOMContentLoaded", function(){
   currencyFrom.onchange = convertCurrency;
   currencyTo.onchange = convertCurrency;
   amount.onkeyup = convertCurrency;
-
+  reverse.onclick = e => {
+    const dummy = currencyTo.value;
+    currencyTo.value = currencyFrom.value;
+    currencyFrom.value = dummy;
+    convertCurrency();
+  }
 });

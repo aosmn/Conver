@@ -11,6 +11,7 @@ self.addEventListener('install', function(event) {
         'styles.css',
         'scripts.js',
         'indexedDB.js',
+        'sharp-import_export-24px.svg'
       ]);
     })
   );

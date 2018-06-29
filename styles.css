@@ -23,6 +23,7 @@ footer {
   color: var(--darkBlue);
   font-weight: 200;
   padding-bottom: 5px;
+  font-size: .75em
 }
 .from-container,
 .to-container {
@@ -39,18 +40,34 @@ footer {
   background: var(--darkBlue);
   position: relative;
 }
-
-.from-container::after{
+@media (min-width:200px) and (max-width: 599px){
+  .from-container::after{
     content: "";
     position: absolute;
     width: 0;
     height: 0;
-    left: calc(50% - 300px);
-    bottom: -100px;
-    border-left: 300px solid transparent;
-    border-right: 300px solid transparent;
-    border-top: 100px solid var(--darkBlue);
+    left: calc(50% - 100vw);
+    bottom: calc(-5vh);
+    border-left: calc(100vw) solid transparent;
+    border-right: calc(100vw) solid transparent;
+    border-top: calc(10vh) solid var(--darkBlue);
+    z-index: -1;
   }
+}
+@media (min-width:600px){
+  .from-container::after{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: calc(50% - 600px);
+    bottom: -50px;
+    border-left: 600px solid transparent;
+    border-right: 600px solid transparent;
+    border-top: 300px solid var(--darkBlue);
+    z-index: -1;
+  }
+}
 
 
 .to-container{
@@ -61,11 +78,13 @@ footer {
     width: 100%;
     overflow-x: auto;
     position: absolute;
-    top: calc(50% - 1rem);
     left: 0;
-    font-size: 6rem;
+    font-size: 6em;
     color: var(--darkBlue);
+}
 
+#result, input {
+  top: 45%;
 }
 
 input {
@@ -74,13 +93,12 @@ input {
   border: 0;
   color: #fff;
   text-align: center;
-  font-size: 6rem;
-  margin-bottom: 1rem;
+  font-size: 6em;
+  margin-bottom: 1em;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   position: absolute;
-  top: calc(50% - 2rem);
   left: calc(50vw - 150px);
   font-family: 'Raleway', sans-serif;
 }
@@ -100,7 +118,7 @@ select {
   text-align-last:center;
   background-color: rgba(0, 0, 0, 0);
   border: 0;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   font-family: 'Raleway', sans-serif;
   font-weight: 200;
  }
@@ -126,21 +144,21 @@ select option {
 #from, #to {
   width: 300px;
   position: absolute;
-  top: calc(50% - 4.5rem);
+  top: 25%;
   left: calc(50vw - 150px);
 }
 
-#to {
-  top: calc(50% - 3.5rem);
-}
+/*#to {
+  top: 35%;
+}*/
 
 .currency {
   width: 300px;
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 200;
   text-transform: uppercase;
   position: absolute;
-  top: calc(50% + 7rem);
+  top: 85%;
   left: calc(50vw - 150px);
 }
 
@@ -150,9 +168,30 @@ select option {
 
 .to-container .currency {
   color: var(--darkBlue);
-  top: calc(50% + 8rem);
+  /*top: 85%;*/
 }
 
+#errorText {
+  background: var(--darkGreen);
+  padding-top: 5px;
+  width: 100%;
+  color: #fff;
+}
+
+button {
+  position: absolute;
+  z-index: 100;
+  background: rgba(0,0,0,0);
+  border: 0;
+  right: 0;
+  bottom: 0;
+}
+button:hover {
+  cursor: pointer;
+}
+button:focus {
+  outline: none
+}
 
 /* width */
 ::-webkit-scrollbar {
