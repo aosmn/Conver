@@ -1,16 +1,13 @@
-registerServiceWorker = () => {
+const registerServiceWorker = () => {
   if (!navigator.serviceWorker) return;
-
-  var indexController = this;
-
-  navigator.serviceWorker.register('./sw.js').then(function(reg) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
     if (!navigator.serviceWorker.controller) {
       return;
     }
   });
 };
 
-const dbPromise = idb.open('currency-db', 2, function(upgradeDb) {
+const dbPromise = idb.open('currency-db', 2, upgradeDb => {
   switch(upgradeDb.oldVersion) {
     case 0:
       const currStore = upgradeDb.createObjectStore('currencies', { keyPath: 'name' });
@@ -21,9 +18,22 @@ const dbPromise = idb.open('currency-db', 2, function(upgradeDb) {
   }
 });
 
+const splitDecimal = n => {
+  const decimal = n - Math.floor(n);
+  const whole = Math.floor(n);
+  return {
+    decimal: decimal,
+    whole: whole
+  }
+}
+
+
 registerServiceWorker();
 
-document.addEventListener("DOMContentLoaded", function(){
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
   const currencyFrom = document.getElementById('from');
   const currencyTo = document.getElementById('to');
   const amount = document.getElementById('amount');
@@ -44,10 +54,40 @@ document.addEventListener("DOMContentLoaded", function(){
         const tx = db.transaction('conversions');
         const convStore = tx.objectStore('conversions');
         return convStore.get(query);
-      }).then(function(val) {
-        if (val) {
-          console.log("value loaded from db");
-          result.innerHTML = val.value*amount.value;
+      }).then(function(dbCurrency) {
+        if (dbCurrency) {
+          // IF LAST UPDATED MORE THAN AN HOUR AGO, LOAD FROM NETWORK AND UPDATE DB
+          const oneHour = 60 * 60 * 1000;
+
+          if((new Date() - dbCurrency.lastUpdate) > oneHour){
+            try {
+              $.getJSON(`https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y&callback=?`, json => {
+                console.log("update DB");
+                dbPromise.then(function(db) {
+                  const tx = db.transaction('conversions', 'readwrite');
+                  const convStore = tx.objectStore('conversions');
+                  convStore.put({name: query, value: json[query].val, lastUpdate: new Date()});
+                  convStore.put({name: invQuery, value: 1/json[query].val, lastUpdate: new Date()});
+
+                  return tx.complete;
+                }).then(function() {
+                  result.innerHTML = json[query].val*amount.value;
+                  errorText.innerHTML = "";
+                });
+              }).catch(e => {
+                console.log("value loaded from db");
+                result.innerHTML = dbCurrency.value*amount.value;
+                errorText.innerHTML = `Please connect to the internet to update currency database`;
+              });
+            } catch (e) {
+                console.log("no internet");
+                console.log("value loaded from db");
+                result.innerHTML = dbCurrency.value*amount.value;
+                errorText.innerHTML = `Please connect to the internet to update currency database`;
+            }
+          } else {
+            result.innerHTML = dbCurrency.value*amount.value;
+          }
           errorText.innerHTML = "";
         } else {
           if(currencyFrom.value === currencyTo.value){
@@ -55,13 +95,14 @@ document.addEventListener("DOMContentLoaded", function(){
           } else {
             try {
               $.getJSON(`https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y&callback=?`, json => {
-                dbPromise.then(function(db) {
+                dbPromise.then(db => {
                   const tx = db.transaction('conversions', 'readwrite');
                   const convStore = tx.objectStore('conversions');
-                  convStore.put({name: query, value: json[query].val});
-                  convStore.put({name: invQuery, value: 1/json[query].val});
+                  convStore.put({name: query, value: json[query].val, lastUpdate: new Date()});
+                  convStore.put({name: invQuery, value: 1/json[query].val, lastUpdate: new Date()});
+
                   return tx.complete;
-                }).then(function() {
+                }).then(() => {
                   result.innerHTML = json[query].val*amount.value;
                   errorText.innerHTML = "";
                 });
@@ -83,20 +124,20 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   };
 
-  dbPromise.then(function(db) {
+  dbPromise.then(db => {
     const tx = db.transaction('currencies');
     const currStore = tx.objectStore('currencies');
     const nameIndex = currStore.index('name');
 
     return nameIndex.getAll();
-  }).then(function(currencies) {
+  }).then(currencies => {
       // console.log(currencies);
       if(currencies.length > 0){
         for (currency of currencies) {
-          var opt = document.createElement('option');
+          let opt = document.createElement('option');
           opt.value = currency.id;
           opt.innerHTML = currency.name;
-          var clone = opt.cloneNode(true);
+          let clone = opt.cloneNode(true);
           if (currency.id == "USD") {
             opt.selected = true;
             clone.selected = true;
@@ -110,12 +151,12 @@ document.addEventListener("DOMContentLoaded", function(){
             currencies = json.results;
             for (const curr in currencies) {
               const currency = currencies[curr];
-              dbPromise.then(function(db) {
+              dbPromise.then(db => {
                 const tx = db.transaction('currencies', 'readwrite');
                 const currStore = tx.objectStore('currencies');
                 currStore.put({name: currency.currencyName, id: currency.id});
                 return tx.complete;
-              }).then(function() {
+              }).then(() => {
                 console.log('Added to db');
                 let curr = {
                   value: currency.id,
