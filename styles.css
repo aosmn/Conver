@@ -193,6 +193,10 @@ button:focus {
   outline: none
 }
 
+#decimal {
+  font-size: 1.5rem
+}
+
 /* width */
 ::-webkit-scrollbar {
     height: 6px;

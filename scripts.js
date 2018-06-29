@@ -19,12 +19,12 @@ const dbPromise = idb.open('currency-db', 2, upgradeDb => {
 });
 
 const splitDecimal = n => {
+  const rsltWhole = document.getElementById('whole');
+  const rsltDecimal = document.getElementById('decimal');
   const decimal = n - Math.floor(n);
   const whole = Math.floor(n);
-  return {
-    decimal: decimal,
-    whole: whole
-  }
+  rsltWhole.innerHTML = whole;
+  rsltDecimal.innerHTML = `.${String(decimal).split('.')[1]}`;
 }
 
 
@@ -32,7 +32,7 @@ registerServiceWorker();
 
 
 
-
+// USING PURE JS To AVOID NEEDING TO CACHE JQUERY , SAVE MEMORY
 document.addEventListener("DOMContentLoaded", () => {
   const currencyFrom = document.getElementById('from');
   const currencyTo = document.getElementById('to');
@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const toCurrLbl = document.getElementById('to-curr');
   const errorText = document.getElementById('errorText');
   const reverse = document.getElementById('switch');
+  const rsltWhole = document.getElementById('whole');
+  const rsltDecimal = document.getElementById('decimal');
 
   const convertCurrency = e => {
 
@@ -71,27 +73,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   return tx.complete;
                 }).then(function() {
-                  result.innerHTML = json[query].val*amount.value;
+
+                  splitDecimal(json[query].val*amount.value);
                   errorText.innerHTML = "";
                 });
               }).catch(e => {
                 console.log("value loaded from db");
-                result.innerHTML = dbCurrency.value*amount.value;
+
+                splitDecimal(dbCurrency.value*amount.value);
                 errorText.innerHTML = `Please connect to the internet to update currency database`;
               });
             } catch (e) {
                 console.log("no internet");
                 console.log("value loaded from db");
-                result.innerHTML = dbCurrency.value*amount.value;
+
+                splitDecimal(dbCurrency.value*amount.value);
                 errorText.innerHTML = `Please connect to the internet to update currency database`;
             }
           } else {
-            result.innerHTML = dbCurrency.value*amount.value;
+            splitDecimal(dbCurrency.value*amount.value);
           }
           errorText.innerHTML = "";
         } else {
           if(currencyFrom.value === currencyTo.value){
-            result.innerHTML = amount.value;
+            splitDecimal(amount.value);
           } else {
             try {
               $.getJSON(`https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y&callback=?`, json => {
@@ -103,7 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   return tx.complete;
                 }).then(() => {
-                  result.innerHTML = json[query].val*amount.value;
+                  splitDecimal(json[query].val*amount.value);
+
                   errorText.innerHTML = "";
                 });
               }).catch(e => {
@@ -112,7 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
               });
             } catch (e) {
                 console.log("no internet");
-                result.innerHTML = ""
+                // result.innerHTML = ""
+
+                rsltWhole.innerHTML = "";
+                rsltDecimal.innerHTML = "";
                 errorText.innerHTML = `Please connect to the internet to update currency database`;
 
             }
@@ -120,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     } else {
-      result.innerHTML = 0;
+      rsltWhole.innerHTML = 0;
     }
   };
 
