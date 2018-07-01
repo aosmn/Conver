@@ -1,4 +1,4 @@
-var staticCacheName = 'converter-static-v1';
+var staticCacheName = 'converter-static-v2';
 var allCaches = [
   staticCacheName
 ];
