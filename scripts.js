@@ -7,11 +7,13 @@ const registerServiceWorker = () => {
     }
 
     if (reg.waiting) {
+      serviceWorker = reg.waiting;
       updateReady(reg.waiting);
       return;
     }
 
     if (reg.installing) {
+      serviceWorker = reg.installing;
       trackInstalling(reg.installing);
       return;
     }
