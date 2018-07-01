@@ -22,7 +22,7 @@ self.addEventListener('activate', function(event) {
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.filter(function(cacheName) {
-          return cacheName.startsWith('wittr-') &&
+          return cacheName.startsWith('converter-') &&
                  !allCaches.includes(cacheName);
         }).map(function(cacheName) {
           return caches.delete(cacheName);
@@ -47,4 +47,11 @@ self.addEventListener('fetch', function(event) {
       return response || fetch(event.request);
     })
   );
+});
+
+
+self.addEventListener('message', function(event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });

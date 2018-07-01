@@ -4,7 +4,54 @@ const registerServiceWorker = () => {
     if (!navigator.serviceWorker.controller) {
       return;
     }
+
+    if (reg.waiting) {
+      updateReady(reg.waiting);
+      return;
+    }
+
+    if (reg.installing) {
+      trackInstalling(reg.installing);
+      return;
+    }
+
+    reg.addEventListener('updatefound', function() {
+      trackInstalling(reg.installing);
+    });
   });
+
+  // Ensure refresh is only called once.
+  // This works around a bug in "force update on reload".
+  let refreshing;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (refreshing) return;
+    window.location.reload();
+    refreshing = true;
+  });
+};
+
+const trackInstalling = function(worker) {
+  var indexController = this;
+  worker.addEventListener('statechange', function() {
+    if (worker.state == 'installed') {
+      updateReady(worker);
+    }
+  });
+};
+
+
+const updateReady = function(worker) {
+  const toast = document.getElementById("simple-toast");
+  toast.setAttribute("class", "visible")
+console.log("kjhgfdsa");
+  // var toast = this._toastsView.show("New version available", {
+  //   buttons: ['refresh', 'dismiss']
+  // });
+
+  // toast.answer.then(function(answer) {
+  //   if (answer != 'refresh') return;
+  //   worker.postMessage({action: 'skipWaiting'});
+  // });
 };
 
 const dbPromise = idb.open('currency-db', 2, upgradeDb => {
@@ -44,6 +91,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const reverse = document.getElementById('switch');
   const rsltWhole = document.getElementById('whole');
   const rsltDecimal = document.getElementById('decimal');
+  const toast = document.getElementById('simple-toast');
+  const refresh = document.getElementById('refresh');
+  const dismiss = document.getElementById('dismiss');
+
+  refresh.onclick = e => {
+      console.log("refreshed");
+      worker.postMessage({action: 'skipWaiting'});
+  }
+  refresh.onclick = e => {
+    toast.setAttribute("class", "")
+  }
 
   const convertCurrency = e => {
 
