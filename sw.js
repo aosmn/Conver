@@ -1,4 +1,4 @@
-const staticCacheName = 'converter-static-v4';
+const staticCacheName = 'converter-static-v5';
 const allCaches = [
   staticCacheName
 ];
