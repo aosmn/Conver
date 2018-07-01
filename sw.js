@@ -1,11 +1,11 @@
-var staticCacheName = 'converter-static-v2';
-var allCaches = [
+const staticCacheName = 'converter-static-v3';
+const allCaches = [
   staticCacheName
 ];
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(staticCacheName).then(function(cache) {
+    caches.open(staticCacheName).then(cache => {
       return cache.addAll([
         'skeleton.html',
         'styles.css',
@@ -16,15 +16,15 @@ self.addEventListener('install', function(event) {
     })
   );
 });
-
-self.addEventListener('activate', function(event) {
+//
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
+        cacheNames.filter(cacheName => {
           return cacheName.startsWith('converter-') &&
                  !allCaches.includes(cacheName);
-        }).map(function(cacheName) {
+        }).map(cacheName => {
           return caches.delete(cacheName);
         })
       );
@@ -32,8 +32,8 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-self.addEventListener('fetch', function(event) {
-  var requestUrl = new URL(event.request.url);
+self.addEventListener('fetch', event => {
+  const requestUrl = new URL(event.request.url);
 
   if (requestUrl.origin === location.origin) {
     if (requestUrl.pathname === '/' || requestUrl.pathname === '/converr/') {
@@ -43,14 +43,14 @@ self.addEventListener('fetch', function(event) {
   }
 
   event.respondWith(
-    caches.match(event.request).then(function(response) {
+    caches.match(event.request).then(response => {
       return response || fetch(event.request);
     })
   );
 });
 
 
-self.addEventListener('message', function(event) {
+self.addEventListener('message', event => {
   if (event.data.action === 'skipWaiting') {
     self.skipWaiting();
   }

@@ -1,4 +1,4 @@
-let serviceWorker = {};
+var serviceWorker = {};
 const registerServiceWorker = () => {
   if (!navigator.serviceWorker) return;
   navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -12,12 +12,11 @@ const registerServiceWorker = () => {
     }
 
     if (reg.installing) {
-      console.log("lala");
       trackInstalling(reg.installing);
       return;
     }
 
-    reg.addEventListener('updatefound', function() {
+    reg.addEventListener('updatefound', () => {
       serviceWorker = reg.installing;
       trackInstalling(reg.installing);
     });
@@ -26,36 +25,25 @@ const registerServiceWorker = () => {
   // Ensure refresh is only called once.
   // This works around a bug in "force update on reload".
   let refreshing;
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
     window.location.reload();
     refreshing = true;
   });
 };
 
-const trackInstalling = function(worker) {
-  var indexController = this;
-  worker.addEventListener('statechange', function() {
+const trackInstalling = worker => {
+  worker.addEventListener('statechange', () => {
     if (worker.state == 'installed') {
-      console.log("haeeeeeeraeeeee");
       updateReady(worker);
     }
   });
 };
 
 
-const updateReady = function(worker) {
+const updateReady = (worker) => {
   const toast = document.getElementById("simple-toast");
   toast.setAttribute("class", "visible")
-// console.log("kjhgfdsa");
-  // var toast = this._toastsView.show("New version available", {
-  //   buttons: ['refresh', 'dismiss']
-  // });
-
-  // toast.answer.then(function(answer) {
-  //   if (answer != 'refresh') return;
-  //   worker.postMessage({action: 'skipWaiting'});
-  // });
 };
 
 const dbPromise = idb.open('currency-db', 2, upgradeDb => {
@@ -101,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   refresh.onclick = e => {
       console.log("refreshed");
-      // console.log("kjhgfdsasdfghjk");
       serviceWorker.postMessage({action: 'skipWaiting'});
   }
   dismiss.onclick = e => {
@@ -115,11 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
     toCurrLbl.innerHTML = currencyTo.value;
     fromCurrLbl.innerHTML = currencyFrom.value;
     if (amount.value) {
-      dbPromise.then(function(db) {
+      dbPromise.then(db => {
         const tx = db.transaction('conversions');
         const convStore = tx.objectStore('conversions');
         return convStore.get(query);
-      }).then(function(dbCurrency) {
+      }).then(dbCurrency => {
         if (dbCurrency) {
           // IF LAST UPDATED MORE THAN AN HOUR AGO, LOAD FROM NETWORK AND UPDATE DB
           const oneHour = 60 * 60 * 1000;
@@ -128,14 +115,14 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
               $.getJSON(`https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y&callback=?`, json => {
                 console.log("update DB");
-                dbPromise.then(function(db) {
+                dbPromise.then(db => {
                   const tx = db.transaction('conversions', 'readwrite');
                   const convStore = tx.objectStore('conversions');
                   convStore.put({name: query, value: json[query].val, lastUpdate: new Date()});
                   convStore.put({name: invQuery, value: 1/json[query].val, lastUpdate: new Date()});
 
                   return tx.complete;
-                }).then(function() {
+                }).then(() => {
 
                   splitDecimal(json[query].val*amount.value);
                   errorText.innerHTML = "";
