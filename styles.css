@@ -189,7 +189,7 @@ footer{
   font-size: 1rem;
   color: #fff;
   position: absolute;
-  bottom: -1.1rem;
+  bottom: -1.2rem;
   transition: bottom 1s;
 }
 
@@ -201,7 +201,7 @@ footer{
   color: var(--white);
 }
 
-button {
+button#switch {
   width: 48px;
   height: 48px;
   position: absolute;
@@ -228,6 +228,21 @@ button:focus {
 #decimal {
   font-size: 1.5rem
 }
+
+#simple-toast button{
+  text-decoration: underline;
+  background: rgba(0, 0, 0, 0);
+  border: 0;
+  color: var(--white);
+  font-size: inherit;
+  font-family: 'Raleway', sans-serif;
+  padding: 0;
+}
+
+#simple-toast button:first-child{
+  margin-left: .5rem;
+}
+
 
 /* width */
 ::-webkit-scrollbar {

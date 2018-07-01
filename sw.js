@@ -1,4 +1,4 @@
-var staticCacheName = 'converter-static-v0';
+var staticCacheName = 'converter-static-v1';
 var allCaches = [
   staticCacheName
 ];
@@ -16,7 +16,6 @@ self.addEventListener('install', function(event) {
     })
   );
 });
-//
 
 self.addEventListener('activate', function(event) {
   event.waitUntil(

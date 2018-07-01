@@ -1,3 +1,4 @@
+let serviceWorker = {};
 const registerServiceWorker = () => {
   if (!navigator.serviceWorker) return;
   navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -11,11 +12,13 @@ const registerServiceWorker = () => {
     }
 
     if (reg.installing) {
+      console.log("lala");
       trackInstalling(reg.installing);
       return;
     }
 
     reg.addEventListener('updatefound', function() {
+      serviceWorker = reg.installing;
       trackInstalling(reg.installing);
     });
   });
@@ -34,6 +37,7 @@ const trackInstalling = function(worker) {
   var indexController = this;
   worker.addEventListener('statechange', function() {
     if (worker.state == 'installed') {
+      console.log("haeeeeeeraeeeee");
       updateReady(worker);
     }
   });
@@ -43,7 +47,7 @@ const trackInstalling = function(worker) {
 const updateReady = function(worker) {
   const toast = document.getElementById("simple-toast");
   toast.setAttribute("class", "visible")
-console.log("kjhgfdsa");
+// console.log("kjhgfdsa");
   // var toast = this._toastsView.show("New version available", {
   //   buttons: ['refresh', 'dismiss']
   // });
@@ -97,9 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   refresh.onclick = e => {
       console.log("refreshed");
-      worker.postMessage({action: 'skipWaiting'});
+      // console.log("kjhgfdsasdfghjk");
+      serviceWorker.postMessage({action: 'skipWaiting'});
   }
-  refresh.onclick = e => {
+  dismiss.onclick = e => {
     toast.setAttribute("class", "")
   }
 
